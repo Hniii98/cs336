@@ -11,6 +11,8 @@ from .rope import RotaryPositionalEmbedding
 from .softmax import softmax
 from .attention import scaled_dot_product_attention, MHSA
 from .transformer import TransformerBlock, TransformerLM
+from .loss import cross_entropy
+from .optimizer import AdamW
 
 try:
     __version__ = importlib.metadata.version("cs336_basics")
