@@ -13,6 +13,7 @@ from .attention import scaled_dot_product_attention, MHSA
 from .transformer import TransformerBlock, TransformerLM
 from .loss import cross_entropy
 from .optimizer import AdamW
+from .lr_schedule import lr_cosine_schedule
 
 try:
     __version__ = importlib.metadata.version("cs336_basics")
