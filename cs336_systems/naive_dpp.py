@@ -91,7 +91,51 @@ class FlatDDP(nn.Module):
 		flatten, grads = self.all_reduce_gradients()
 		self.average_gradients(flatten, grads)
 
+class OverlapDDP(nn.Module):
+	def __init__(
+		self, 
+		module: torch.nn.Module,
+	):
+		super().__init__()
+		self.module = module
 
+		self.local_rank = dist.get_rank()
+		self.world_size = dist.get_world_size()
+
+		for param in self.module.parameters():
+			dist.broadcast(param.data, src=0)
+
+	def forward(
+		self,
+		inputs,
+	):
+		return self.module(inputs)
+	
+	def all_reduce_gradients(self):
+		handles =[]
+		
+		for param in self.module.parameters():
+			if param.grad is not None:
+				handle = dist.all_reduce(param.grad, async_op=True)
+				handles.append([handle, param.grad])
+
+		return handles
+	
+	def average_gradients(self, handles):
+
+		with torch.no_grad():
+			for handle, grad in handles:
+				handle.wait()
+				grad.div_(self.world_size)
+	
+	def finish_gradient_synchronization(self):
+		handles = self.all_reduce_gradients()
+		self.average_gradients(handles)
+
+
+
+
+			
 
 			
 		
