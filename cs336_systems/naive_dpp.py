@@ -76,10 +76,10 @@ class FlatDDP(nn.Module):
 		dist.all_reduce(flatten)
 		return flatten, grads_view
 
-	def average_gradients(self):
-		flattten, grads_view = self.all_reduce_gradients()
+	def average_gradients(self, flatten_tensor, grads_view):
+		
 
-		grads_reduced = _unflatten_dense_tensors(flattten, grads_view)
+		grads_reduced = _unflatten_dense_tensors(flatten_tensor, grads_view)
 
 		with torch.no_grad():
 			for grad, grad_reduced in zip(grads_view, grads_reduced):
@@ -88,8 +88,12 @@ class FlatDDP(nn.Module):
 
 	
 	def finish_gradient_synchronization(self):
-		self.all_reduce_gradients()
-		self.average_gradients()
+		flatten, grads = self.all_reduce_gradients()
+		self.average_gradients(flatten, grads)
+
+
+
+			
 		
 	
 
