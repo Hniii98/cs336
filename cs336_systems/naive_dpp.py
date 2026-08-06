@@ -81,9 +81,10 @@ class FlatDDP(nn.Module):
 
 		grads_reduced = _unflatten_dense_tensors(flattten, grads_view)
 
-		for grad, grad_reduced in zip(grads_view, grads_reduced):
-			grad.copy_(grad_reduced)
-			grad.div_(self.world_size)
+		with torch.no_grad():
+			for grad, grad_reduced in zip(grads_view, grads_reduced):
+				grad.copy_(grad_reduced)
+				grad.div_(self.world_size)
 
 	
 	def finish_gradient_synchronization(self):
