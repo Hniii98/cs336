@@ -3,7 +3,7 @@ from __future__ import annotations
 import torch
 import cs336_systems
 from cs336_systems import flash_attn_pytorch, flash_attn_triton
-from cs336_systems import naive_dpp
+from cs336_systems import naive_ddp
 from cs336_systems import optimizer_state_sharding
 from cs336_systems import fsdp
 
@@ -56,7 +56,7 @@ def get_ddp(module: torch.nn.Module) -> torch.nn.Module:
         Instance of a DDP class.
     """
     # For example: return DDP(module)
-    return naive_dpp.NaiveDDP(module)
+    return naive_ddp.NaiveDDP(module)
 
 
 def ddp_on_after_backward(ddp_model: torch.nn.Module, optimizer: torch.optim.Optimizer):

@@ -5,7 +5,7 @@ import torch.distributed as dist
 from torch.multiprocessing.spawn import spawn
 import time
 import argparse
-from cs336_systems.naive_dpp import NaiveDDP, FlatDDP, OverlapDDP
+from cs336_systems.naive_ddp import NaiveDDP, FlatDDP, OverlapDDP
 from cs336_systems.configs import CONFIGS
 
 DDP_IMPLEMENTATIONS = {
